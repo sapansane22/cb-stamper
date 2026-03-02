@@ -1,0 +1,188 @@
+╔══════════════════════════════════════════════════════════════════╗
+║          CB APPLICATION FORM STAMPER — DEPLOYMENT GUIDE          ║
+╚══════════════════════════════════════════════════════════════════╝
+
+WHAT THIS SYSTEM DOES
+─────────────────────
+• Hosts a web page your entire sales team accesses via one URL
+• Each click of "Generate" issues TWO unique sequential CB numbers
+  (CB00000001 + CB00000002, then CB00000003 + CB00000004, etc.)
+• Numbers are ATOMIC — impossible for two users to get the same pair
+  even if they click simultaneously
+• Numbers are stamped onto your PDF and downloaded instantly
+• Every generation is logged: Employee ID, numbers, time, IP
+• At 8:00 PM every day a MIS CSV is auto-saved on the server
+• You can download any day's MIS via a private admin URL
+
+────────────────────────────────────────────────────────────────────
+STEP 1 — PREPARE YOUR FILES
+────────────────────────────────────────────────────────────────────
+You need 4 files in a single folder:
+  ✅ app.py
+  ✅ requirements.txt
+  ✅ Procfile
+  ✅ template.pdf          ← YOUR application form PDF (rename to exactly this)
+
+────────────────────────────────────────────────────────────────────
+STEP 2 — FIND THE CORRECT NUMBER POSITIONS ON YOUR PDF
+────────────────────────────────────────────────────────────────────
+This is the only "technical" step. You need to set X/Y coordinates
+in app.py so the CB numbers land in the right spot on your form.
+
+Method A — Adobe Acrobat (easiest):
+  1. Open your PDF in Adobe Acrobat Reader
+  2. Go to Edit → Preferences → Page Display → Show page coordinates
+  3. Hover over the spot where you want the first CB number
+  4. Note the X and Y values shown at the bottom
+  5. Convert: Acrobat shows inches → multiply by 72 for points
+     e.g. 5.5 inches from left  =  5.5 × 72 = 396 points (X)
+          10.5 inches from top  =  page_height − (10.5 × 72) = Y
+
+Method B — Run the test script below on your machine:
+  pip install flask pypdf reportlab
+  python test_position.py
+  (Open output_test.pdf and adjust the numbers until it looks right)
+
+Open app.py and change:
+  NUM1_X, NUM1_Y = 370, 718   # ← x, y of first CB number
+  NUM2_X, NUM2_Y = 480, 718   # ← x, y of second CB number (right next to first)
+
+TIP: Both numbers are usually on the same line (same Y), spaced ~110 points apart.
+TIP: Y is measured from the BOTTOM of the page. A4 height = 842pt, Letter = 792pt.
+
+────────────────────────────────────────────────────────────────────
+STEP 3 — DEPLOY TO RENDER.COM (Free, recommended)
+────────────────────────────────────────────────────────────────────
+Render gives you a live HTTPS URL in under 10 minutes for free.
+
+A) CREATE A GITHUB REPOSITORY
+   1. Go to https://github.com and sign up (free)
+   2. Click "New repository" → name it "cb-stamper" → Create
+   3. Upload all 4 files (drag and drop in the browser)
+
+B) DEPLOY ON RENDER
+   1. Go to https://render.com → sign up with GitHub
+   2. Click "New +" → "Web Service"
+   3. Connect your GitHub repo "cb-stamper"
+   4. Settings:
+        Name:     cb-form-stamper
+        Runtime:  Python 3
+        Build:    pip install -r requirements.txt
+        Start:    gunicorn app:app --workers 1 --timeout 60
+   5. Click "Advanced" → Add Environment Variable:
+        Key:   ADMIN_KEY
+        Value: (choose a secret password, e.g. "Sales@2024!")
+   6. Click "Create Web Service"
+   7. Wait ~3 minutes for the first deploy to finish
+
+C) GET YOUR URL
+   Render gives you:  https://cb-form-stamper.onrender.com
+   (or similar — shown at top of the Render dashboard)
+
+D) SHARE WITH YOUR TEAM
+   Send everyone this URL.  That's it. ✅
+
+────────────────────────────────────────────────────────────────────
+STEP 4 — SET YOUR ADMIN KEY
+────────────────────────────────────────────────────────────────────
+The ADMIN_KEY is your private password for downloading MIS reports.
+
+Your admin URLs will be:
+  Today's MIS:
+  https://cb-form-stamper.onrender.com/admin/mis?key=YOUR_ADMIN_KEY
+
+  Specific date:
+  https://cb-form-stamper.onrender.com/admin/mis/2024-03-15?key=YOUR_ADMIN_KEY
+
+  Live stats (JSON):
+  https://cb-form-stamper.onrender.com/admin/stats?key=YOUR_ADMIN_KEY
+
+KEEP THESE LINKS PRIVATE — they give access to all usage data.
+
+────────────────────────────────────────────────────────────────────
+STEP 5 — HOW YOUR TEAM USES IT
+────────────────────────────────────────────────────────────────────
+1. Sales person opens the URL in any browser (phone or PC)
+2. Types their Employee ID (e.g. EMP1042)
+3. Clicks "Generate & Download Form"
+4. PDF downloads automatically with their unique CB number pair
+5. Repeat for each new application — each gets fresh numbers
+
+────────────────────────────────────────────────────────────────────
+MIS REPORT DETAILS
+────────────────────────────────────────────────────────────────────
+Auto-generated every day at 8:00 PM and saved on the server.
+You can also download on-demand anytime via the admin URL above.
+
+The CSV contains:
+  Section 1 — SUMMARY
+    • Total forms generated that day
+    • Per-employee breakdown: who generated how many forms
+
+  Section 2 — DETAIL LOG
+    • Row for every single generation
+    • Employee ID | CB Number 1 | CB Number 2 | Time | IP Address
+
+Example summary:
+  Employee Summary
+  EMP1042    5 forms    10 CB numbers used
+  EMP2078    3 forms     6 CB numbers used
+  EMP3015    7 forms    14 CB numbers used
+
+────────────────────────────────────────────────────────────────────
+ADJUSTING NUMBER POSITION AFTER DEPLOY
+────────────────────────────────────────────────────────────────────
+1. Edit app.py → change NUM1_X, NUM1_Y, NUM2_X, NUM2_Y
+2. Commit the change to GitHub (Edit → Save → Commit changes)
+3. Render automatically redeploys in ~2 minutes
+4. Test by generating a form
+
+────────────────────────────────────────────────────────────────────
+TEST POSITION SCRIPT  (run locally before deploying)
+────────────────────────────────────────────────────────────────────
+Save this as test_position.py in the same folder as template.pdf,
+then run: python test_position.py
+
+  from reportlab.pdfgen import canvas
+  from pypdf import PdfReader, PdfWriter
+  import io
+
+  X1, Y1 = 370, 718   # ← adjust these
+  X2, Y2 = 480, 718
+
+  reader = PdfReader("template.pdf")
+  page   = reader.pages[0]
+  pw, ph = float(page.mediabox.width), float(page.mediabox.height)
+
+  buf = io.BytesIO()
+  c = canvas.Canvas(buf, pagesize=(pw, ph))
+  c.setFont("Helvetica-Bold", 10)
+  c.drawString(X1, Y1, "CB00000001")
+  c.drawString(X2, Y2, "CB00000002")
+  c.save(); buf.seek(0)
+
+  overlay = PdfReader(buf).pages[0]
+  page.merge_page(overlay)
+  w = PdfWriter(); w.add_page(page)
+  with open("output_test.pdf","wb") as f: w.write(f)
+  print("Saved output_test.pdf — check the positions!")
+
+────────────────────────────────────────────────────────────────────
+IMPORTANT NOTES
+────────────────────────────────────────────────────────────────────
+⚠  Free Render tier "sleeps" after 15 min of inactivity.
+   First load after sleep takes ~30 seconds.
+   To avoid this, upgrade to Render's $7/month Starter plan.
+
+⚠  The SQLite database (stamper.db) stores the counter and all logs.
+   On Render free tier, the disk persists across restarts.
+   ALWAYS back up stamper.db before modifying/redeploying.
+
+⚠  Numbers start from CB00000001 and can go up to CB99999999
+   (99 million forms) — effectively unlimited.
+
+⚠  Use --workers 1 in gunicorn (already set in Procfile).
+   SQLite + atomic operations work correctly with a single worker.
+   If you ever need multiple workers, migrate to PostgreSQL.
+
+════════════════════════════════════════════════════════════════════

@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: cb-form-stamper
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app --workers 1 --timeout 60"
+    envVars:
+      - key: ADMIN_KEY
+        generateValue: true       # Render generates a random secret
+    disk:
+      name: data
+      mountPath: /opt/render/project/src
+      sizeGB: 1
