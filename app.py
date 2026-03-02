@@ -59,7 +59,7 @@ TEMPLATES = {
 # ── Stamp positions (points from bottom-left of page) ───────────
 # A4 = 595 × 842 pt  |  Letter = 612 × 792 pt  |  1 inch = 72 pt
 # CHANGE (a): same X/Y is applied to EVERY page in the document.
-NUM1_X, NUM1_Y = 60, 835
+NUM1_X, NUM1_Y = 60, 735
 NUM2_X, NUM2_Y = 180, 835
 FONT_NAME      = "Helvetica-Bold"
 FONT_SIZE      = 10
