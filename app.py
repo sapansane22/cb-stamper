@@ -39,8 +39,8 @@ MIS_FOLDER   = "mis_reports"
 # Stamp positions (points from bottom-left corner of the page)
 # A4 = 595 × 842 pt  |  Letter = 612 × 792 pt
 # 1 inch = 72 points. Adjust X/Y until the numbers land on your form.
-NUM1_X, NUM1_Y = 60, 120   # First  CB number
-NUM2_X, NUM2_Y = 60, 300   # Second CB number (right next to first)
+NUM1_X, NUM1_Y = 60, 10   # First  CB number
+NUM2_X, NUM2_Y = 100, 10   # Second CB number (right next to first)
 FONT_NAME      = "Helvetica-Bold"
 FONT_SIZE      = 10
 TARGET_PAGE    = 0           # 0 = first page
@@ -80,8 +80,8 @@ def init_db():
             CREATE TABLE IF NOT EXISTS logs (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 employee_id  TEXT NOT NULL,
-                cb_num_1     TEXT NOT NULL,
-                cb_num_2     TEXT NOT NULL,
+                cd_num_1     TEXT NOT NULL,
+                cd_num_2     TEXT NOT NULL,
                 generated_at TEXT NOT NULL,
                 ip_address   TEXT
             )
