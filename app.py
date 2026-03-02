@@ -80,8 +80,8 @@ def init_db():
             CREATE TABLE IF NOT EXISTS logs (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 employee_id  TEXT NOT NULL,
-                cd_num_1     TEXT NOT NULL,
-                cd_num_2     TEXT NOT NULL,
+                cb_num_1     TEXT NOT NULL,
+                cb_num_2     TEXT NOT NULL,
                 generated_at TEXT NOT NULL,
                 ip_address   TEXT
             )
@@ -116,7 +116,7 @@ def atomic_next_pair():
         finally:
             conn.close()
 
-    return (f"CB{current + 1:08d}", f"CB{current + 2:08d}")
+    return (f"CD{current + 1:08d}", f"CD{current + 2:08d}")
 
 
 def log_generation(employee_id, cb1, cb2, ip):
