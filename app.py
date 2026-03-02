@@ -39,8 +39,8 @@ MIS_FOLDER   = "mis_reports"
 # Stamp positions (points from bottom-left corner of the page)
 # A4 = 595 × 842 pt  |  Letter = 612 × 792 pt
 # 1 inch = 72 points. Adjust X/Y until the numbers land on your form.
-NUM1_X, NUM1_Y = 100, 800   # First  CB number
-NUM2_X, NUM2_Y = 250, 800   # Second CB number (right next to first)
+NUM1_X, NUM1_Y = 100, 850   # First  CB number
+NUM2_X, NUM2_Y = 250, 850   # Second CB number (right next to first)
 FONT_NAME      = "Helvetica-Bold"
 FONT_SIZE      = 10
 TARGET_PAGE    = 0           # 0 = first page
