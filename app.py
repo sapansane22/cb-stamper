@@ -45,8 +45,8 @@ TEMPLATES = {
     "param":      {"label": "Param",       "file": "template_param.pdf"},
 }
 
-NUM1_X, NUM1_Y = 150, 800
-NUM2_X, NUM2_Y = 275, 800
+NUM1_X, NUM1_Y = 175, 815
+NUM2_X, NUM2_Y = 280, 815
 FONT_NAME      = "Helvetica-Bold"
 FONT_SIZE      = 10
 # ────────────────────────────────────────────────────────────────
