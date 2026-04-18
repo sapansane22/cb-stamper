@@ -36,7 +36,7 @@ ADMIN_KEY  = os.environ.get("ADMIN_KEY", "admin1234")
 TIMEZONE   = "Asia/Kolkata"
 MIS_FOLDER = "mis_reports"
 
-CB_START  = 700_000_000   # Series starts at CB700000001
+CB_START  = 800_000_000   # Series starts at CB700000001
 CB_FORMAT = "CB{:09d}"   # CB + 9 digits
 
 TEMPLATES = {
