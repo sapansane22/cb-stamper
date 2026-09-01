@@ -36,8 +36,8 @@ ADMIN_KEY  = os.environ.get("ADMIN_KEY", "admin1234")
 TIMEZONE   = "Asia/Kolkata"
 MIS_FOLDER = "mis_reports"
 
-CB_START  = 810_000_000   # Series starts at CB700000001
-CB_FORMAT = "CB{:09d}"   # CB + 9 digits
+CB_START  = 810_000_000   # Series starts at CD700000001
+CB_FORMAT = "CD{:09d}"   # CD + 9 digits
 
 TEMPLATES = {
     "nondefence": {"label": "Non Defence", "file": "template_nondefence.pdf"},
